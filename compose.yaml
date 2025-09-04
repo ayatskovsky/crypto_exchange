@@ -18,6 +18,11 @@ services:
     volumes:
       - caddy_data:/data
       - caddy_config:/config
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost/" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       # HTTP
       - target: 80
