@@ -1,0 +1,51 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: 'Cryptocurrency Exchange Rates API'
+            description: 'API for retrieving EUR exchange rates for BTC, ETH, and LTC from Binance'
+            version: '1.0.0'
+            contact:
+                name: 'API Support'
+                email: 'support@example.com'
+        servers:
+            - url: '%env(resolve:APP_URL)%'
+              description: 'Development server'
+        components:
+            schemas:
+                ExchangeRateResponse:
+                    type: object
+                    properties:
+                        pair:
+                            type: string
+                            example: 'EUR/BTC'
+                        count:
+                            type: integer
+                            example: 288
+                        data:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    timestamp:
+                                        type: string
+                                        format: datetime
+                                        example: '2025-09-02 14:00:00'
+                                    rate:
+                                        type: number
+                                        format: float
+                                        example: 0.00002340
+                ErrorResponse:
+                    type: object
+                    properties:
+                        error:
+                            type: string
+                            example: 'Invalid parameter'
+                        supported_pairs:
+                            type: array
+                            items:
+                                type: string
+                            example: ['EUR/BTC', 'EUR/ETH', 'EUR/LTC']
+    areas:
+        default:
+            path_patterns:
+                - ^/api(?!/doc$)

@@ -42,6 +42,10 @@ ENV MERCURE_TRANSPORT_URL=bolt:///data/mercure.db
 ENV PHP_INI_SCAN_DIR=":$PHP_INI_DIR/app.conf.d"
 
 ###> recipes ###
+###> doctrine/doctrine-bundle ###
+#RUN install-php-extensions pdo_pgsql
+RUN install-php-extensions pdo_mysql
+###< doctrine/doctrine-bundle ###
 ###< recipes ###
 
 COPY --link frankenphp/conf.d/10-app.ini $PHP_INI_DIR/app.conf.d/
@@ -95,3 +99,13 @@ RUN set -eux; \
 	composer dump-env prod; \
 	composer run-script --no-dev post-install-cmd; \
 	chmod +x bin/console; sync;
+
+
+# Consumer image for running Symfony Messenger consumers
+FROM frankenphp_prod AS frankenphp_consumer
+
+# Remove healthcheck since it's not needed for consumers
+HEALTHCHECK NONE
+
+# Override CMD to run messenger consumers
+CMD ["php", "bin/console", "messenger:consume", "async", "--time-limit=3600", "--memory-limit=128M", "--quiet"]
